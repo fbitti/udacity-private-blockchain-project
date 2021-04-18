@@ -64,11 +64,20 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-            let height = this.chain.length;
-            let previousBlockHash = this.chain[height - 1].hash;
-            
+            try {
+                let height = self.chain.length;
 
-           
+                block.previousBlockHash = self.chain[height - 1].hash;
+                block.height = height;
+                block.timestamp = Date.now();
+                block.hash = SHA256(JSON.stringify(block));
+
+                self.push(block);
+
+                resolve(block);
+            } catch (error) {
+                reject("Cannot add block ", block, "because of ", error);
+            }
         });
     }
 
@@ -82,7 +91,11 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+            let message = address + 
+                        ":" + 
+                        Date.now().toString().slice(0, -3) + 
+                        ":signMe";
+            resolve(message);
         });
     }
 
@@ -95,7 +108,7 @@ class Blockchain {
      * 1. Get the time from the message sent as a parameter example: `parseInt(message.split(':')[1])`
      * 2. Get the current time: `let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));`
      * 3. Check if the time elapsed is less than 5 minutes
-     * 4. Veify the message with wallet address and signature: `bitcoinMessage.verify(message, address, signature)`
+     * 4. Verify the message with wallet address and signature: `bitcoinMessage.verify(message, address, signature)`
      * 5. Create the block and add it to the chain
      * 6. Resolve with the block added.
      * @param {*} address 
@@ -106,7 +119,22 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-            
+            let messageTimestamp = parseInt(message.split(':')[1]);
+            let currentTimeInSeconds = Date.now().toString().slice(0, -3);
+            if (messageTimestamp > currentTimeInSeconds) {
+                reject("Star submission error: the message timestamp cannot be in the future.");
+            }
+            if (currentTimeInSeconds - messageTimestamp < 300) {
+                if (bitcoinMessage.verify(message, address, signature)) {
+                    let block = new Block(star);
+                    self._addBlock(block);
+                    resolve(block);
+                } else {
+                    reject("Star submission error: The signature is not valid");
+                }
+            } else {
+                reject("Star submission error: The message to sign is older than 5 minutes");
+            }
         });
     }
 
