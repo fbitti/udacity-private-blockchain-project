@@ -25,7 +25,7 @@ class BlockchainController {
             if(req.params.height) {
                 const height = parseInt(req.params.height);
                 let block = await this.blockchain.getBlockByHeight(height);
-                if(block){
+                if (block) {
                     return res.status(200).json(block);
                 } else {
                     return res.status(404).send("Block Not Found!");
@@ -40,6 +40,7 @@ class BlockchainController {
     // Endpoint that allows user to request Ownership of a Wallet address (POST Endpoint)
     requestOwnership() {
         this.app.post("/requestValidation", async (req, res) => {
+            console.log(req.body);
             if(req.body.address) {
                 const address = req.body.address;
                 const message = await this.blockchain.requestMessageOwnershipVerification(address);

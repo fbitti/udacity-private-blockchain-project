@@ -34,7 +34,7 @@ class Blockchain {
      * Passing as a data `{data: 'Genesis Block'}`
      */
     async initializeChain() {
-        if( this.height === -1){
+        if (this.height === -1) {
             let block = new BlockClass.Block({data: 'Genesis Block'});
             await this._addBlock(block);
         }
@@ -44,7 +44,7 @@ class Blockchain {
      * Utility method that return a Promise that will resolve with the height of the chain
      */
     getChainHeight() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             resolve(this.height);
         });
     }
@@ -67,16 +67,19 @@ class Blockchain {
             try {
                 let height = self.chain.length;
 
-                block.previousBlockHash = self.chain[height - 1].hash;
-                block.height = height;
-                block.timestamp = Date.now();
+                if (height > 0) {
+                    block.previousBlockHash = self.chain[height - 1].hash;
+                    block.height = height;
+                } else {
+                    // it is a Genesis block
+                    block.height = 0;
+                }
+                block.timestamp = Date.now().toString();
                 block.hash = SHA256(JSON.stringify(block));
-
-                self.push(block);
-
+                self.chain.push(block);
                 resolve(block);
             } catch (error) {
-                reject("Cannot add block ", block, "because of ", error);
+                reject("Cannot add block " + block + "because of " + error);
             }
         });
     }
@@ -95,7 +98,7 @@ class Blockchain {
                         ":" + 
                         Date.now().toString().slice(0, -3) + 
                         ":signMe";
-            resolve(message);
+            resolve(message.toString());
         });
     }
 
@@ -147,7 +150,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+            let block = self.chain.filter(b => b.hash == hash)[0];
+            if (block) {
+                resolve(block);
+            } else {
+                resolve(null);
+            }
         });
     }
 
@@ -159,7 +167,7 @@ class Blockchain {
     getBlockByHeight(height) {
         let self = this;
         return new Promise((resolve, reject) => {
-            let block = self.chain.filter(p => p.height === height)[0];
+            let block = self.chain.filter(b => b.height === height)[0];
             if(block){
                 resolve(block);
             } else {
