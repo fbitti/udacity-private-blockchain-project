@@ -11,6 +11,7 @@
 const SHA256 = require('crypto-js/sha256');
 const BlockClass = require('./block.js');
 const bitcoinMessage = require('bitcoinjs-message');
+const hex2ascii = require('hex2ascii');
 
 class Blockchain {
 
@@ -75,7 +76,7 @@ class Blockchain {
                     block.height = 0;
                 }
                 block.timestamp = Date.now().toString();
-                block.hash = SHA256(JSON.stringify(block));
+                block.hash = SHA256(JSON.stringify(block)).toString();
                 self.chain.push(block);
                 resolve(block);
             } catch (error) {
@@ -97,7 +98,7 @@ class Blockchain {
             let message = address + 
                         ":" + 
                         Date.now().toString().slice(0, -3) + 
-                        ":signMe";
+                        ":signMeWithoutQuotes";
             resolve(message.toString());
         });
     }
@@ -129,7 +130,10 @@ class Blockchain {
             }
             if (currentTimeInSeconds - messageTimestamp < 300) {
                 if (bitcoinMessage.verify(message, address, signature)) {
-                    let block = new Block(star);
+                    let data = {};
+                    data.owner = address;
+                    data.star = star;
+                    let block = new BlockClass.Block(data); 
                     self._addBlock(block);
                     resolve(block);
                 } else {
@@ -149,7 +153,7 @@ class Blockchain {
      */
     getBlockByHash(hash) {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let block = self.chain.filter(b => b.hash == hash)[0];
             if (block) {
                 resolve(block);
@@ -166,7 +170,7 @@ class Blockchain {
      */
     getBlockByHeight(height) {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let block = self.chain.filter(b => b.height === height)[0];
             if(block){
                 resolve(block);
@@ -182,11 +186,17 @@ class Blockchain {
      * Remember the star should be returned decoded.
      * @param {*} address 
      */
-    getStarsByWalletAddress (address) {
+    getStarsByWalletAddress(address) {
         let self = this;
         let stars = [];
-        return new Promise((resolve, reject) => {
-            
+        return new Promise((resolve) => {
+            stars = self.chain
+                        .filter(b => {
+                            console.log(b);
+                            let decodedData = JSON.parse(hex2ascii(b.body));
+                            return address == decodedData.owner;
+                        });
+            resolve(stars);
         });
     }
 
