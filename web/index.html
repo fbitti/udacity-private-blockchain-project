@@ -14,74 +14,84 @@
         <v-container>
             <template>
                 <v-stepper
-                    v-model="e6"
+                    v-model="step"
                     vertical
                 >
                     <v-stepper-step
-                    :complete="e6 > 1"
-                    step="1"
+                        :complete="step > 1"
+                        step="1"
                     >
-                    Which star are you going to register?
-                    <small>Inform its Dec, RA. Add an optional story.</small>
+                        Which star are you registering?
+                        <small>Inform its Dec, RA. Add an optional story.</small>
                     </v-stepper-step>
                 
                     <v-stepper-content step="1">
                         <v-row>
                             <v-col cols="12" md="6">
                                 <v-card
-                                    color="grey lighten-1"
-                                    class="mb-12"
+                                    color="grey lighten-4"
+                                    height="100%"
                                 >
+                                    <v-card-title>Right Ascension</v-card-title>
                                     <v-card-text>
                                         <v-container fluid>
                                             <v-row>
-                                                <v-col cols="12">
+                                                <v-col 
+                                                    cols="12"
+                                                >
                                                     <v-slider
-                                                        v-model="red"
-                                                        :max="255"
-                                                        label="R"
-                                                        class="align-center"
+                                                        v-model="raHour"
+                                                        :max="23"
+                                                        class="align-start"
                                                     >
                                                         <template v-slot:append>
-                                                        <v-text-field
-                                                            v-model="red"
-                                                            class="mt-0 pt-0"
-                                                            type="number"
-                                                            style="width: 60px"
-                                                        ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="raHour"
+                                                                class="mt-0 pt-0"
+                                                                type="number"
+                                                                style="width: 70px"
+                                                                suffix="h"
+                                                                dense
+                                                                outlined
+                                                            ></v-text-field>
                                                         </template>
                                                     </v-slider>
-                                            
+                                                    <v-spacer></v-spacer>
                                                     <v-slider
-                                                        v-model="green"
-                                                        :max="255"
-                                                        label="G"
+                                                        v-model="raMin"
+                                                        :max="59"
                                                         class="align-center"
                                                     >
                                                         <template v-slot:append>
-                                                        <v-text-field
-                                                            v-model="green"
-                                                            class="mt-0 pt-0"
-                                                            type="number"
-                                                            style="width: 60px"
-                                                        ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="raMin"
+                                                                class="mt-0 pt-0"
+                                                                type="number"
+                                                                style="width: 70px"
+                                                                suffix="m"
+                                                                dense
+                                                                outlined
+                                                            ></v-text-field>
                                                         </template>
                                                     </v-slider>
-                                            
+                                                    <v-spacer></v-spacer>
                                                     <v-slider
-                                                        v-model="blue"
-                                                        :max="255"
-                                                        step="0.01"
-                                                        label="B"
-                                                        class="align-center"
+                                                        v-model="raSec"
+                                                        :max="59"
+                                                        step="0.1"
+                                                        align-self="end"
+                                                        class="align-end"
                                                     >
                                                         <template v-slot:append>
-                                                        <v-text-field
-                                                            v-model="blue"
-                                                            class="mt-0 pt-0"
-                                                            type="number"
-                                                            style="width: 60px"
-                                                        ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="raSec"
+                                                                class="mt-0 pt-0"
+                                                                type="number"
+                                                                style="width: 70px"
+                                                                suffix="s"
+                                                                dense
+                                                                outlined
+                                                            ></v-text-field>
                                                         </template>
                                                     </v-slider>
                                                 </v-col>
@@ -92,67 +102,70 @@
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-card
-                                    color="grey lighten-1"
-                                    class="mb-12"
+                                    color="grey lighten-4"
+                                    height="100%"
                                 >
+                                    <v-card-title>Declination</v-card-title>
                                     <v-card-text>
                                         <v-container fluid>
                                             <v-row>
                                                 <v-col cols="4">
                                                     <v-slider
-                                                    v-model="red"
-                                                    :max="255"
-                                                    label="R"
-                                                    class="align-center"
-                                                    vertical
+                                                        v-model="decDegree"
+                                                        :min="-90"
+                                                        :max="90"
+                                                        vertical
                                                     >
                                                     <template v-slot:append>
                                                         <v-text-field
-                                                        v-model="red"
-                                                        class="mt-0 pt-0"
-                                                        type="number"
-                                                        style="width: 60px"
+                                                            v-model="decDegree"
+                                                            class="mt-0 pt-0"
+                                                            type="number"
+                                                            style="width: 70px"
+                                                            suffix="º"
+                                                            dense
+                                                            outlined
                                                         ></v-text-field>
                                                     </template>
                                                     </v-slider>
                                                 </v-col>
-                                    
                                                 <v-col cols="4">
                                                     <v-slider
-                                                    v-model="green"
-                                                    :max="255"
-                                                    label="G"
-                                                    class="align-center"
-                                                    vertical
+                                                        v-model="decMin"
+                                                        :max="59"
+                                                        vertical
                                                     >
                                                     <template v-slot:append>
                                                         <v-text-field
-                                                        v-model="green"
-                                                        class="mt-0 pt-0"
-                                                        type="number"
-                                                        style="width: 60px"
+                                                            v-model="decMin"
+                                                            class="mt-0 pt-0"
+                                                            type="number"
+                                                            style="width: 70px"
+                                                            suffix="'"
+                                                            dense
+                                                            outlined
                                                         ></v-text-field>
                                                     </template>
                                                     </v-slider>
                                                 </v-col>
-                                    
                                                 <v-col cols="4">
                                                     <v-slider
-                                                    v-model="blue"
-                                                    :max="255"
-                                                    step="0.01"
-                                                    label="B"
-                                                    class="align-center"
-                                                    vertical
+                                                        v-model="decSec"
+                                                        :max="59"
+                                                        step="0.1"
+                                                        vertical
                                                     >
-                                                    <template v-slot:append>
-                                                        <v-text-field
-                                                        v-model="blue"
-                                                        class="mt-0 pt-0"
-                                                        type="number"
-                                                        style="width: 60px"
-                                                        ></v-text-field>
-                                                    </template>
+                                                        <template v-slot:append>
+                                                            <v-text-field
+                                                                v-model="decSec"
+                                                                class="mt-0 pt-0"
+                                                                type="number"
+                                                                style="width: 80px"
+                                                                suffix="''"
+                                                                dense
+                                                                outlined
+                                                            ></v-text-field>
+                                                        </template>
                                                     </v-slider>
                                                 </v-col>
                                             </v-row>
@@ -161,67 +174,81 @@
                                 </v-card>
                             </v-col>
                         </v-row>
-                    <v-btn
-                        color="primary"
-                        @click="e6 = 2"
-                    >
-                        Continue
-                    </v-btn>
-                    <v-btn text>
-                        Cancel
-                    </v-btn>
+                        <v-row>
+                            <v-col
+                                cols="12"
+                            >
+                            <v-text-field
+                                v-model="story"
+                                dense
+                                label="Optional: Type your story about this star"
+                                outlined
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-btn
+                            color="primary"
+                            @click="step = 2"
+                        >
+                            Continue
+                        </v-btn>
                     </v-stepper-content>
-                
+
                     <v-stepper-step
-                    :complete="e6 > 2"
-                    step="2"
+                        :complete="step > 2"
+                        step="2"
                     >
-                    Configure analytics for this app
+                        Verify your identity
                     </v-stepper-step>
-                
                     <v-stepper-content step="2">
-                    <v-card
-                        color="grey lighten-1"
-                        class="mb-12"
-                        height="200px"
-                    ></v-card>
-                    <v-btn
-                        color="primary"
-                        @click="e6 = 3"
-                    >
-                        Continue
-                    </v-btn>
-                    <v-btn text>
-                        Cancel
-                    </v-btn>
+                        <v-card
+                            color="grey lighten-1"
+                            class="mb-12"
+                            height="200px"
+                        >
+                            Step 1. Inform your address
+                            Step 2. Sign this message
+                            Step 3. What is the signature?
+                        </v-card>
+                        <v-btn
+                            color="primary"
+                            @click="step = 3"
+                        >
+                            Continue
+                        </v-btn>
+                        <v-btn 
+                            @click="step = 1"
+                        >
+                            Back
+                        </v-btn>
                     </v-stepper-content>
                 
                     <v-stepper-step
-                    :complete="e6 > 3"
-                    step="3"
+                        :complete="step > 3"
+                        step="3"
                     >
-                    Select an ad format and name ad unit
+                        Confirm the data and register your star on the blockchain
                     </v-stepper-step>
                 
                     <v-stepper-content step="3">
-                    <v-card
-                        color="grey lighten-1"
-                        class="mb-12"
-                        height="200px"
-                    ></v-card>
-                    <v-btn
-                        color="primary"
-                        @click="e6 = 4"
-                    >
-                        Continue
-                    </v-btn>
-                    <v-btn text>
-                        Cancel
-                    </v-btn>
+                        <v-card
+                            color="grey lighten-1"
+                            class="mb-12"
+                            height="200px"
+                        ></v-card>
+                        <v-btn
+                            color="primary"
+                            @click="step = 4"
+                        >
+                            Continue
+                        </v-btn>
+                        <v-btn text>
+                            Cancel
+                        </v-btn>
                     </v-stepper-content>
                 
                     <v-stepper-step step="4">
-                    View setup instructions
+                        View setup instructions
                     </v-stepper-step>
                     <v-stepper-content step="4">
                     <v-card
@@ -231,7 +258,7 @@
                     ></v-card>
                     <v-btn
                         color="primary"
-                        @click="e6 = 1"
+                        @click="step = 1"
                     >
                         Continue
                     </v-btn>
@@ -253,7 +280,14 @@
       el: '#app',
       vuetify: new Vuetify(),
       data: {
-
+        raHour: 0,
+        raMin: 0,
+        raSec: 0,
+        decDegree: 0,
+        decMin: 0,
+        decSec: 0,
+        step: 1,
+        story: ""
       } 
     })
   </script>
