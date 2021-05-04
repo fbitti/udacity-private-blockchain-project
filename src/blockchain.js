@@ -75,9 +75,10 @@ class Blockchain {
                     // it is a Genesis block
                     block.height = 0;
                 }
-                block.timestamp = Date.now().toString();
+                block.time = Date.now().toString();
                 block.hash = SHA256(JSON.stringify(block)).toString();
                 self.chain.push(block);
+                self.height++;
                 resolve(block);
             } catch (error) {
                 reject("Cannot add block " + block + "because of " + error);
@@ -98,8 +99,8 @@ class Blockchain {
             let message = address + 
                         ":" + 
                         Date.now().toString().slice(0, -3) + 
-                        ":signMeWithoutQuotes";
-            resolve(message.toString());
+                        ":starRegistry";
+            resolve(message);
         });
     }
 
@@ -123,6 +124,10 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
+            let chainValidationErrors = await self.validateChain();
+            if (chainValidationErrors.length > 0) {
+                reject(JSON.stringify(chainValidationErrors));
+            }
             let messageTimestamp = parseInt(message.split(':')[1]);
             let currentTimeInSeconds = Date.now().toString().slice(0, -3);
             if (messageTimestamp > currentTimeInSeconds) {
@@ -172,7 +177,7 @@ class Blockchain {
         let self = this;
         return new Promise((resolve) => {
             let block = self.chain.filter(b => b.height === height)[0];
-            if(block){
+            if (block) {
                 resolve(block);
             } else {
                 resolve(null);
@@ -192,7 +197,6 @@ class Blockchain {
         return new Promise((resolve) => {
             stars = self.chain
                         .filter(b => {
-                            console.log(b);
                             let decodedData = JSON.parse(hex2ascii(b.body));
                             return address == decodedData.owner;
                         });
@@ -206,14 +210,23 @@ class Blockchain {
      * 1. You should validate each block using `validateBlock`
      * 2. Each Block should check the with the previousBlockHash
      */
-    validateChain() {
+    async validateChain() {
         let self = this;
         let errorLog = [];
-        return new Promise(async (resolve, reject) => {
-            
+        let height = await self.getChainHeight();
+        return new Promise(async (resolve) => {
+            for (let i = 0; i <= height; i++) {
+                self.chain[i]
+                        .validate()
+                        .then(isValid => {
+                            if (!isValid) {
+                                errorLog.push("Block " + i + " was tampered.")
+                            }
+                        });
+            }
+            resolve(errorLog);
         });
     }
-
 }
 
 module.exports.Blockchain = Blockchain;   

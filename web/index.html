@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-container>
+            <template>
+                <v-stepper
+                    v-model="e6"
+                    vertical
+                >
+                    <v-stepper-step
+                    :complete="e6 > 1"
+                    step="1"
+                    >
+                    Select an app
+                    <small>Summarize if needed</small>
+                    </v-stepper-step>
+                
+                    <v-stepper-content step="1">
+                    <v-card
+                        color="grey lighten-1"
+                        class="mb-12"
+                        height="200px"
+                    ></v-card>
+                    <v-btn
+                        color="primary"
+                        @click="e6 = 2"
+                    >
+                        Continue
+                    </v-btn>
+                    <v-btn text>
+                        Cancel
+                    </v-btn>
+                    </v-stepper-content>
+                
+                    <v-stepper-step
+                    :complete="e6 > 2"
+                    step="2"
+                    >
+                    Configure analytics for this app
+                    </v-stepper-step>
+                
+                    <v-stepper-content step="2">
+                    <v-card
+                        color="grey lighten-1"
+                        class="mb-12"
+                        height="200px"
+                    ></v-card>
+                    <v-btn
+                        color="primary"
+                        @click="e6 = 3"
+                    >
+                        Continue
+                    </v-btn>
+                    <v-btn text>
+                        Cancel
+                    </v-btn>
+                    </v-stepper-content>
+                
+                    <v-stepper-step
+                    :complete="e6 > 3"
+                    step="3"
+                    >
+                    Select an ad format and name ad unit
+                    </v-stepper-step>
+                
+                    <v-stepper-content step="3">
+                    <v-card
+                        color="grey lighten-1"
+                        class="mb-12"
+                        height="200px"
+                    ></v-card>
+                    <v-btn
+                        color="primary"
+                        @click="e6 = 4"
+                    >
+                        Coinue
+                    </v-btn>
+                    <v-btn text>
+                        Cancel
+                    </v-btn>
+                    </v-stepper-content>
+                
+                    <v-stepper-step step="4">
+                    View setup instructions
+                    </v-stepper-step>
+                    <v-stepper-content step="4">
+                    <v-card
+                        color="grey lighten-1"
+                        class="mb-12"
+                        height="200px"
+                    ></v-card>
+                    <v-btn
+                        color="primary"
+                        @click="e6 = 1"
+                    >
+                        Continue
+                    </v-btn>
+                    <v-btn text>
+                        Cancel
+                    </v-btn>
+                    </v-stepper-content>
+                </v-stepper>
+            </template>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+    })
+  </script>
+</body>
+</html>

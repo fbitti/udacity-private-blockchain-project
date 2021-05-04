@@ -17,12 +17,13 @@ class BlockchainController {
         this.submitStar();
         this.getBlockByHash();
         this.getStarsByOwner();
+        this.validateChain();
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
     getBlockByHeight() {
         this.app.get("/block/height/:height", async (req, res) => {
-            if(req.params.height) {
+            if (req.params.height) {
                 const height = parseInt(req.params.height);
                 let block = await this.blockchain.getBlockByHeight(height);
                 if (block) {
@@ -33,14 +34,12 @@ class BlockchainController {
             } else {
                 return res.status(404).send("Block Not Found! Review the Parameters!");
             }
-            
         });
     }
 
     // Endpoint that allows user to request Ownership of a Wallet address (POST Endpoint)
     requestOwnership() {
         this.app.post("/requestValidation", async (req, res) => {
-            console.log(req.body);
             if(req.body.address) {
                 const address = req.body.address;
                 const message = await this.blockchain.requestMessageOwnershipVerification(address);
@@ -57,8 +56,7 @@ class BlockchainController {
 
     // Endpoint that allow Submit a Star, you need first to `requestOwnership` to have the message (POST endpoint)
     submitStar() {
-        this.app.post("/submitstar", async (req, res) => {
-            console.log(req.body);
+        this.app.post("/submitStar", async (req, res) => {
             if(req.body.address && req.body.message && req.body.signature && req.body.star) {
                 const address = req.body.address;
                 const message = req.body.message;
@@ -94,7 +92,6 @@ class BlockchainController {
             } else {
                 return res.status(404).send("Block Not Found! Review the Parameters!");
             }
-            
         });
     }
 
@@ -116,10 +113,19 @@ class BlockchainController {
             } else {
                 return res.status(500).send("Block Not Found! Review the Parameters!");
             }
-            
         });
     }
 
+    validateChain() {
+        this.app.get("/validateChain", async (req, res) => {
+            let chainErrors = await this.blockchain.validateChain();
+            if (chainErrors.length == 0) {
+                res.status(200).send("The blockchain is valid.");
+            } else {
+                return res.status(200).json(chainErrors);
+            }
+        });
+    }
 }
 
 module.exports = (app, blockchainObj) => { return new BlockchainController(app, blockchainObj);}
