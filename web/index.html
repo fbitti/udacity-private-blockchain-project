@@ -5,6 +5,7 @@
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
 </head>
 <body>
   <div id="app">
@@ -20,16 +21,146 @@
                     :complete="e6 > 1"
                     step="1"
                     >
-                    Select an app
-                    <small>Summarize if needed</small>
+                    Which star are you going to register?
+                    <small>Inform its Dec, RA. Add an optional story.</small>
                     </v-stepper-step>
                 
                     <v-stepper-content step="1">
-                    <v-card
-                        color="grey lighten-1"
-                        class="mb-12"
-                        height="200px"
-                    ></v-card>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-card
+                                    color="grey lighten-1"
+                                    class="mb-12"
+                                >
+                                    <v-card-text>
+                                        <v-container fluid>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-slider
+                                                        v-model="red"
+                                                        :max="255"
+                                                        label="R"
+                                                        class="align-center"
+                                                    >
+                                                        <template v-slot:append>
+                                                        <v-text-field
+                                                            v-model="red"
+                                                            class="mt-0 pt-0"
+                                                            type="number"
+                                                            style="width: 60px"
+                                                        ></v-text-field>
+                                                        </template>
+                                                    </v-slider>
+                                            
+                                                    <v-slider
+                                                        v-model="green"
+                                                        :max="255"
+                                                        label="G"
+                                                        class="align-center"
+                                                    >
+                                                        <template v-slot:append>
+                                                        <v-text-field
+                                                            v-model="green"
+                                                            class="mt-0 pt-0"
+                                                            type="number"
+                                                            style="width: 60px"
+                                                        ></v-text-field>
+                                                        </template>
+                                                    </v-slider>
+                                            
+                                                    <v-slider
+                                                        v-model="blue"
+                                                        :max="255"
+                                                        step="0.01"
+                                                        label="B"
+                                                        class="align-center"
+                                                    >
+                                                        <template v-slot:append>
+                                                        <v-text-field
+                                                            v-model="blue"
+                                                            class="mt-0 pt-0"
+                                                            type="number"
+                                                            style="width: 60px"
+                                                        ></v-text-field>
+                                                        </template>
+                                                    </v-slider>
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
+                                </v-card>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-card
+                                    color="grey lighten-1"
+                                    class="mb-12"
+                                >
+                                    <v-card-text>
+                                        <v-container fluid>
+                                            <v-row>
+                                                <v-col cols="4">
+                                                    <v-slider
+                                                    v-model="red"
+                                                    :max="255"
+                                                    label="R"
+                                                    class="align-center"
+                                                    vertical
+                                                    >
+                                                    <template v-slot:append>
+                                                        <v-text-field
+                                                        v-model="red"
+                                                        class="mt-0 pt-0"
+                                                        type="number"
+                                                        style="width: 60px"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    </v-slider>
+                                                </v-col>
+                                    
+                                                <v-col cols="4">
+                                                    <v-slider
+                                                    v-model="green"
+                                                    :max="255"
+                                                    label="G"
+                                                    class="align-center"
+                                                    vertical
+                                                    >
+                                                    <template v-slot:append>
+                                                        <v-text-field
+                                                        v-model="green"
+                                                        class="mt-0 pt-0"
+                                                        type="number"
+                                                        style="width: 60px"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    </v-slider>
+                                                </v-col>
+                                    
+                                                <v-col cols="4">
+                                                    <v-slider
+                                                    v-model="blue"
+                                                    :max="255"
+                                                    step="0.01"
+                                                    label="B"
+                                                    class="align-center"
+                                                    vertical
+                                                    >
+                                                    <template v-slot:append>
+                                                        <v-text-field
+                                                        v-model="blue"
+                                                        class="mt-0 pt-0"
+                                                        type="number"
+                                                        style="width: 60px"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    </v-slider>
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                     <v-btn
                         color="primary"
                         @click="e6 = 2"
@@ -82,7 +213,7 @@
                         color="primary"
                         @click="e6 = 4"
                     >
-                        Coinue
+                        Continue
                     </v-btn>
                     <v-btn text>
                         Cancel
@@ -121,6 +252,9 @@
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
+      data: {
+
+      } 
     })
   </script>
 </body>
