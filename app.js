@@ -7,6 +7,7 @@
  * - `body-parser` This module allows to parse the body of the post request into a JSON
  */
 const express = require("express");
+const cors = require('cors');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 /**
@@ -19,6 +20,7 @@ class ApplicationServer {
 	constructor() {
 		//Express application object
 		this.app = express();
+		this.app.use(cors());
 		//Blockchain class object
 		this.blockchain = new BlockChain.Blockchain();
 		//Method that initialized the express framework.

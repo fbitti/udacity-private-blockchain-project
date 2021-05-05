@@ -178,13 +178,13 @@
                             <v-col
                                 cols="12"
                             >
-                            <v-text-field
-                                v-model="story"
-                                dense
-                                label="Optional: Type your story about this star"
-                                outlined
-                            ></v-text-field>
-                          </v-col>
+                                <v-text-field
+                                    v-model="story"
+                                    dense
+                                    label="Optional: Type your story about this star"
+                                    outlined
+                                ></v-text-field>
+                            </v-col>
                         </v-row>
                         <v-btn
                             color="primary"
@@ -201,15 +201,45 @@
                         Verify your identity
                     </v-stepper-step>
                     <v-stepper-content step="2">
-                        <v-card
-                            color="grey lighten-1"
-                            class="mb-12"
-                            height="200px"
-                        >
-                            Step 1. Inform your address
-                            Step 2. Sign this message
-                            Step 3. What is the signature?
-                        </v-card>
+                        <v-row>
+                            <v-col
+                                cols="12"
+                            >
+                                <v-text-field
+                                    v-model="address"
+                                    v-on:keyup="requestValidation"
+                                    label="What is your bitcoin address?"
+                                    outlined
+                                ></v-text-field>
+                            </v-col>
+                            <v-col
+                                cols="12"
+                            >
+                                <v-alert 
+                                    v-if="address != ''"
+                                    type="info"
+                                    icon="mdi-draw"
+                                    dense
+                                    prominent
+                                >
+                                    
+                                    Sign this message:        
+                                    <div class="headline">
+                                        <strong>{{ validationMessage }}</strong>
+                                    </div>
+                                </v-alert>
+                            </v-col>    
+                            <v-col
+                                cols="12"
+                            >
+                                <v-text-field
+                                    v-if="address != ''"
+                                    v-model="signature"
+                                    label="What is the signature for the above message?"
+                                    outlined
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
                         <v-btn
                             color="primary"
                             @click="step = 3"
@@ -242,8 +272,10 @@
                         >
                             Continue
                         </v-btn>
-                        <v-btn text>
-                            Cancel
+                        <v-btn 
+                            @click="step = 2"
+                        >
+                            Back
                         </v-btn>
                     </v-stepper-content>
                 
@@ -260,10 +292,12 @@
                         color="primary"
                         @click="step = 1"
                     >
-                        Continue
+                        Submit another star
                     </v-btn>
-                    <v-btn text>
-                        Cancel
+                    <v-btn  
+                        @click="step = 3"
+                    >
+                        Back
                     </v-btn>
                     </v-stepper-content>
                 </v-stepper>
@@ -287,8 +321,27 @@
         decMin: 0,
         decSec: 0,
         step: 1,
-        story: ""
-      } 
+        story: "",
+        address: "",
+        validationMessage: "",
+        signature: ""
+      },
+      methods: {
+            requestValidation: function() {
+                if (this.address != "") {
+                    const options = {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'address=' + this.address
+                    };
+                    fetch("http://localhost:8000/requestValidation", options)
+                        .then(response => response.text())
+                        .then(data => this.validationMessage = data.split('"')[1]);
+                }
+            }
+      }
     })
   </script>
 </body>
