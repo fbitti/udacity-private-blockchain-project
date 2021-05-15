@@ -4,7 +4,7 @@
  *  It uses libraries like `crypto-js` to create the hashes for each block and `bitcoinjs-message` 
  *  to verify a message signature. The chain is stored in the array
  *  `this.chain = [];`. Of course each time you run the application the chain will be empty because and array
- *  isn't a persisten storage method.
+ *  isn't a persistent storage method.
  *  
  */
 
@@ -134,15 +134,19 @@ class Blockchain {
                 reject("Star submission error: the message timestamp cannot be in the future.");
             }
             if (currentTimeInSeconds - messageTimestamp < 300) {
-                if (bitcoinMessage.verify(message, address, signature)) {
-                    let data = {};
-                    data.owner = address;
-                    data.star = star;
-                    let block = new BlockClass.Block(data); 
-                    self._addBlock(block);
-                    resolve(block);
-                } else {
-                    reject("Star submission error: The signature is not valid");
+                try {
+                    if (bitcoinMessage.verify(message, address, signature)) {
+                        let data = {};
+                        data.owner = address;
+                        data.star = star;
+                        let block = new BlockClass.Block(data); 
+                        self._addBlock(block);
+                        resolve(block);
+                    } else {
+                        reject("Star submission error: The signature is not valid");
+                    }
+                } catch (error) {
+                    reject("Error");
                 }
             } else {
                 reject("Star submission error: The message to sign is older than 5 minutes");

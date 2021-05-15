@@ -49,7 +49,7 @@
                                                                 v-model="raHour"
                                                                 class="mt-0 pt-0"
                                                                 type="number"
-                                                                style="width: 70px"
+                                                                style="width: 75px"
                                                                 suffix="h"
                                                                 dense
                                                                 outlined
@@ -67,7 +67,7 @@
                                                                 v-model="raMin"
                                                                 class="mt-0 pt-0"
                                                                 type="number"
-                                                                style="width: 70px"
+                                                                style="width: 75px"
                                                                 suffix="m"
                                                                 dense
                                                                 outlined
@@ -87,7 +87,7 @@
                                                                 v-model="raSec"
                                                                 class="mt-0 pt-0"
                                                                 type="number"
-                                                                style="width: 70px"
+                                                                style="width: 80px"
                                                                 suffix="s"
                                                                 dense
                                                                 outlined
@@ -295,22 +295,24 @@ Signature = {{ signature }}
                         View setup instructions
                     </v-stepper-step>
                     <v-stepper-content step="4">
-                    <v-card
-                        color="grey lighten-1"
-                        class="mb-12"
-                        height="200px"
-                    ></v-card>
-                    <v-btn
-                        color="primary"
-                        @click="step = 1"
-                    >
-                        Submit another star
-                    </v-btn>
-                    <v-btn  
-                        @click="step = 3"
-                    >
-                        Back
-                    </v-btn>
+                        <v-row>
+                            <v-col>
+                                <pre>
+{{ latestNewBlock }}
+                                </pre>
+                            </v-col>
+                        </v-row>
+                        <v-btn
+                            color="primary"
+                            @click="step = 1"
+                        >
+                            Submit another star
+                        </v-btn>
+                        <v-btn  
+                            @click="step = 3"
+                        >
+                            Back
+                        </v-btn>
                     </v-stepper-content>
                 </v-stepper>
             </template>
@@ -336,7 +338,8 @@ Signature = {{ signature }}
         story: "",
         address: "",
         validationMessage: "",
-        signature: ""
+        signature: "",
+        latestNewBlock: {}
       },
       methods: {
         requestValidation: function() {
@@ -366,15 +369,18 @@ Signature = {{ signature }}
                 },
                 body: 'address=' + this.address +
                     '&message=' + this.validationMessage +
-                    '&signature=' + this.signature +
+                    '&signature=' + encodeURIComponent(this.signature) +
                     '&star=' + JSON.stringify(star)
             };
             fetch("http://localhost:8000/submitStar", options)
-                .then(response => response.text())
-                .then(console.log)
+                .then(response => response.json())
+                .then(json => {
+                    this.latestNewBlock = json;
+                    this.step = 4;
+                })
                 .catch(console.error);
+            }
         }
-      }
     })
   </script>
 </body>

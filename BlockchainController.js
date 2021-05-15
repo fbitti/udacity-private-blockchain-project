@@ -64,7 +64,7 @@ class BlockchainController {
                 const star = req.body.star;
                 try {
                     let block = await this.blockchain.submitStar(address, message, signature, star);
-                    if(block){
+                    if (block) {
                         return res.status(200).json(block);
                     } else {
                         return res.status(500).send("An error happened!");
@@ -73,7 +73,7 @@ class BlockchainController {
                     return res.status(500).send(error);
                 }
             } else {
-                return res.status(500).send("Check the Body Parameter!");
+                return res.status(500).send("Missing parameters in the Body Content!");
             }
         });
     }
@@ -116,6 +116,7 @@ class BlockchainController {
         });
     }
 
+    // adding this endpoint according to the project rubric
     validateChain() {
         this.app.get("/validateChain", async (req, res) => {
             let chainErrors = await this.blockchain.validateChain();
