@@ -205,6 +205,10 @@
                             <v-col
                                 cols="12"
                             >
+                            </v-col>
+                            <v-col
+                                cols="12"
+                            >
                                 <v-text-field
                                     v-model="address"
                                     v-on:keyup="requestValidation"
@@ -242,6 +246,7 @@
                         </v-row>
                         <v-btn
                             color="primary"
+                            :disabled="signature == ''"
                             @click="step = 3"
                         >
                             Continue
@@ -261,16 +266,23 @@
                     </v-stepper-step>
                 
                     <v-stepper-content step="3">
-                        <v-card
-                            color="grey lighten-1"
-                            class="mb-12"
-                            height="200px"
-                        ></v-card>
+                        <v-row>
+                            <v-col>
+                                <pre>
+Owner = {{ address }}
+Star = 
+    Right ascension: {{ raHour }}h {{ raMin }}m {{ raSec }}s  
+    Declination: {{ decDegree }}º {{ decMin }}' {{ decSec }}''
+    Story: {{ story }}
+Signature = {{ signature }}
+                                </pre>
+                            </v-col>
+                        </v-row>
                         <v-btn
                             color="primary"
-                            @click="step = 4"
+                            @click="registerStar()"
                         >
-                            Continue
+                            Register
                         </v-btn>
                         <v-btn 
                             @click="step = 2"
@@ -327,20 +339,41 @@
         signature: ""
       },
       methods: {
-            requestValidation: function() {
-                if (this.address != "") {
-                    const options = {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'address=' + this.address
-                    };
-                    fetch("http://localhost:8000/requestValidation", options)
-                        .then(response => response.text())
-                        .then(data => this.validationMessage = data.split('"')[1]);
-                }
+        requestValidation: function() {
+            if (this.address != "") {
+                const options = {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'address=' + this.address
+                };
+                fetch("http://localhost:8000/requestValidation", options)
+                    .then(response => response.text())
+                    .then(data => this.validationMessage = data.split('"')[1]);
             }
+        },
+        registerStar: function() {
+            const star = {
+                "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
+                "dec": this.decDegree + "º " + this.decMin + "' " + this.decSec + '"',
+                "story": this.story
+            }
+            const options = {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'address=' + this.address +
+                    '&message=' + this.validationMessage +
+                    '&signature=' + this.signature +
+                    '&star=' + JSON.stringify(star)
+            };
+            fetch("http://localhost:8000/submitStar", options)
+                .then(response => response.text())
+                .then(console.log)
+                .catch(console.error);
+        }
       }
     })
   </script>
