@@ -304,14 +304,9 @@ Signature = {{ signature }}
                         </v-row>
                         <v-btn
                             color="primary"
-                            @click="step = 1"
+                            @click="resetAllValues()"
                         >
                             Submit another star
-                        </v-btn>
-                        <v-btn  
-                            @click="step = 3"
-                        >
-                            Back
                         </v-btn>
                     </v-stepper-content>
                 </v-stepper>
@@ -379,6 +374,20 @@ Signature = {{ signature }}
                     this.step = 4;
                 })
                 .catch(console.error);
+            },
+            resetAllValues: function() {
+                this.raHour = 0;
+                this.raMin = 0;
+                this.raSec=  0;
+                this.decDegree = 0;
+                this.decMin = 0;
+                this.decSec = 0;
+                this.story = "";
+                this.address = "";
+                this.validationMessage = "";
+                this.signature = "";
+                this.latestNewBlock = {};
+                this.step = 1;
             }
         }
     })
