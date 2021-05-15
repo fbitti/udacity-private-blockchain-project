@@ -361,7 +361,7 @@ Signature = {{ signature }}</pre>
                     },
                     body: 'address=' + this.address
                 };
-                fetch("http://localhost:8000/requestValidation", options)
+                fetch("/requestValidation", options)
                     .then(response => {
                         if (!response.ok) {
                             throw Error(response.statusText);
@@ -374,7 +374,7 @@ Signature = {{ signature }}</pre>
                     .catch(error => {
                         this.requestValidationError = true;
                         console.error(error);
-                    });
+                });
             }
         },
         registerStar: function() {
@@ -393,7 +393,7 @@ Signature = {{ signature }}</pre>
                     '&signature=' + encodeURIComponent(this.signature) +
                     '&star=' + JSON.stringify(star)
             };
-            fetch("http://localhost:8000/submitStar", options)
+            fetch("/submitStar", options)
                 .then(response => {
                     if (!response.ok) {
                         throw Error(response.statusText);
