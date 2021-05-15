@@ -146,7 +146,7 @@ class Blockchain {
                         reject("Star submission error: The signature is not valid");
                     }
                 } catch (error) {
-                    reject("Error");
+                    reject(error);
                 }
             } else {
                 reject("Star submission error: The message to sign is older than 5 minutes");

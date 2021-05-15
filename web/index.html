@@ -298,7 +298,7 @@ Signature = {{ signature }}</pre>
                             Register
                         </v-btn>
                         <v-btn 
-                            @click="step = 2"
+                            @click="inputDataAgain()"
                         >
                             Back
                         </v-btn>
@@ -333,82 +333,82 @@ Signature = {{ signature }}</pre>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script>
     new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-      data: {
-        raHour: 0,
-        raMin: 0,
-        raSec: 0,
-        decDegree: 0,
-        decMin: 0,
-        decSec: 0,
-        step: 1,
-        story: "",
-        address: "",
-        requestValidationError: false,
-        validationMessage: "",
-        signature: "",
-        registrationError: false,
-        latestNewBlock: {}
-      },
-      methods: {
-        requestValidation: function() {
-            if (this.address != "") {
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+            raHour: 0,
+            raMin: 0,
+            raSec: 0,
+            decDegree: 0,
+            decMin: 0,
+            decSec: 0,
+            step: 1,
+            story: "",
+            address: "",
+            requestValidationError: false,
+            validationMessage: "",
+            signature: "",
+            registrationError: false,
+            latestNewBlock: {}
+        },
+        methods: {
+            requestValidation: function() {
+                if (this.address != "") {
+                    const options = {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'address=' + this.address
+                    };
+                    fetch("/requestValidation", options)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw Error(response.statusText);
+                            }
+                            this.requestValidationError = false;
+                            return response;
+                        })
+                        .then(response => response.text())
+                        .then(data => this.validationMessage = data.split('"')[1])
+                        .catch(error => {
+                            this.requestValidationError = true;
+                            console.error(error);
+                    });
+                }
+            },
+            registerStar: function() {
+                const star = {
+                    "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
+                    "dec": this.decDegree + "º " + this.decMin + "' " + this.decSec + '"',
+                    "story": this.story
+                }
                 const options = {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: 'address=' + this.address
+                    body: 'address=' + this.address +
+                        '&message=' + this.validationMessage +
+                        '&signature=' + encodeURIComponent(this.signature) +
+                        '&star=' + JSON.stringify(star)
                 };
-                fetch("/requestValidation", options)
+                fetch("/submitStar", options)
                     .then(response => {
                         if (!response.ok) {
                             throw Error(response.statusText);
                         }
-                        this.requestValidationError = false;
                         return response;
                     })
-                    .then(response => response.text())
-                    .then(data => this.validationMessage = data.split('"')[1])
+                    .then(response => response.json())
+                    .then(json => {
+                        this.latestNewBlock = json;
+                        this.step = 4;
+                    })
                     .catch(error => {
-                        this.requestValidationError = true;
+                        this.registrationError = true;
                         console.error(error);
-                });
-            }
-        },
-        registerStar: function() {
-            const star = {
-                "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
-                "dec": this.decDegree + "º " + this.decMin + "' " + this.decSec + '"',
-                "story": this.story
-            }
-            const options = {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'address=' + this.address +
-                    '&message=' + this.validationMessage +
-                    '&signature=' + encodeURIComponent(this.signature) +
-                    '&star=' + JSON.stringify(star)
-            };
-            fetch("/submitStar", options)
-                .then(response => {
-                    if (!response.ok) {
-                        throw Error(response.statusText);
-                    }
-                    return response;
-                })
-                .then(response => response.json())
-                .then(json => {
-                    this.latestNewBlock = json;
-                    this.step = 4;
-                })
-                .catch(error => {
-                    this.registrationError = true;
-                    console.error(error);
-                });
+                    });
             },
             resetAllValues: function() {
                 this.raHour = 0;
@@ -425,6 +425,10 @@ Signature = {{ signature }}</pre>
                 this.latestNewBlock = {};
                 this.step = 1;
                 this.registrationError = false;
+            },
+            inputDataAgain: function() {
+                this.requestValidationError = false;
+                this.step = 2;
             }
         }
     })
