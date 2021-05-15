@@ -247,7 +247,7 @@
                         </v-row>
                         <v-btn
                             color="primary"
-                            :disabled="signature == ''"
+                            :disabled="signature == '' || requestValidationError"
                             @click="step = 3"
                         >
                             Continue
@@ -268,15 +268,27 @@
                 
                     <v-stepper-content step="3">
                         <v-row>
-                            <v-col>
-                                <pre>
-Owner = {{ address }}
+                            <v-col 
+                                cols="12"
+                            >
+                                <pre>Owner = {{ address }}
 Star = 
     Right ascension: {{ raHour }}h {{ raMin }}m {{ raSec }}s  
     Declination: {{ decDegree }}º {{ decMin }}' {{ decSec }}''
     Story: {{ story }}
-Signature = {{ signature }}
-                                </pre>
+Signature = {{ signature }}</pre>
+                            </v-col>
+                            <v-col
+                                cols="12"
+                            >
+                                <v-alert 
+                                    v-if="registrationError"
+                                    type="error"
+                                    dense
+                                    prominent
+                                >
+                                    Network error, invalid address or signature. Please go back one step, review your info and try again.
+                                </v-alert>
                             </v-col>
                         </v-row>
                         <v-btn
@@ -333,8 +345,10 @@ Signature = {{ signature }}
         step: 1,
         story: "",
         address: "",
+        requestValidationError: false,
         validationMessage: "",
         signature: "",
+        registrationError: false,
         latestNewBlock: {}
       },
       methods: {
@@ -348,8 +362,19 @@ Signature = {{ signature }}
                     body: 'address=' + this.address
                 };
                 fetch("http://localhost:8000/requestValidation", options)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.requestValidationError = false;
+                        return response;
+                    })
                     .then(response => response.text())
-                    .then(data => this.validationMessage = data.split('"')[1]);
+                    .then(data => this.validationMessage = data.split('"')[1])
+                    .catch(error => {
+                        this.requestValidationError = true;
+                        console.error(error);
+                    });
             }
         },
         registerStar: function() {
@@ -369,12 +394,21 @@ Signature = {{ signature }}
                     '&star=' + JSON.stringify(star)
             };
             fetch("http://localhost:8000/submitStar", options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response;
+                })
                 .then(response => response.json())
                 .then(json => {
                     this.latestNewBlock = json;
                     this.step = 4;
                 })
-                .catch(console.error);
+                .catch(error => {
+                    this.registrationError = true;
+                    console.error(error);
+                });
             },
             resetAllValues: function() {
                 this.raHour = 0;
@@ -385,10 +419,12 @@ Signature = {{ signature }}
                 this.decSec = 0;
                 this.story = "";
                 this.address = "";
+                this.requestValidationError = false;
                 this.validationMessage = "";
                 this.signature = "";
                 this.latestNewBlock = {};
                 this.step = 1;
+                this.registrationError = false;
             }
         }
     })
