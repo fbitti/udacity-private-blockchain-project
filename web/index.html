@@ -308,21 +308,22 @@ Signature = {{ signature }}</pre>
                         View the newly added block
                     </v-stepper-step>
                     <v-stepper-content step="4">
-
-                        <v-row>
-                            <v-col>
-                                <v-card
-                                    color="grey lighten-4"
-                                    height="100%"
-                                >
-                                    <v-card-title>Right Ascension</v-card-title>
-                                    <v-card-text>
-                                        <pre>{{ latestNewBlock }}</pre>
-                                        {{ latestNewBlock }}
-                                    </v-card-text>
-                                </v-card>
-                            </v-col>
-                        </v-row>
+                        <v-container fluid>
+                            <v-row>
+                                <v-col>
+                                    <v-card
+                                        color="grey lighten-4"
+                                        height="100%"
+                                    >
+                                        <v-card-title>New Block added</v-card-title>
+                                        <v-card-text>
+                                            <pre>{{ latestNewBlock }}</pre>
+                                            {{ latestNewBlock }}
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-container>
                         <v-btn
                             color="primary"
                             @click="resetAllValues()"
