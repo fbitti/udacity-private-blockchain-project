@@ -131,7 +131,7 @@
                                                                     class="mt-0 pt-0"
                                                                     type="number"
                                                                     style="width: 70px"
-                                                                    suffix="º"
+                                                                    suffix="°"
                                                                     dense
                                                                     outlined
                                                                 ></v-text-field>
@@ -281,11 +281,11 @@
                                         cols="12"
                                     >
                                         <pre>Owner = {{ address }}
-        Star = 
-            Right ascension: {{ raHour }}h {{ raMin }}m {{ raSec }}s  
-            Declination: {{ decDegree }}º {{ decMin }}' {{ decSec }}''
-            Story: {{ story }}
-        Signature = {{ signature }}</pre>
+Star = 
+    Right ascension: {{ raHour }}h {{ raMin }}m {{ raSec }}s  
+    Declination: {{ decDegree }}° {{ decMin }}' {{ decSec }}''
+    Story: {{ story }}
+Signature = {{ signature }}</pre>
                                     </v-col>
                                     <v-col
                                         cols="12"
@@ -397,7 +397,7 @@
                 registerStar: function() {
                     const star = {
                         "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
-                        "dec": this.decDegree + "º " + this.decMin + "' " + this.decSec + '"',
+                        "dec": this.decDegree + "° " + this.decMin + "' " + this.decSec + '"',
                         "story": this.story
                     }
                     const options = {
