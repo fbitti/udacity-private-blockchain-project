@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/images/favicon.ico" sizes="64x64 32x32 16x16" />
+    <style>
+        pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+
+            <v-app-bar
+                app
+                shrink-on-scroll
+                prominent
+                src="images/star-registry-navbar-light.jpg"
+            >
+        
+                <v-app-bar-title><strong>Star Registry</strong></v-app-bar-title>
+        
+                <v-spacer></v-spacer>
+        
+                <v-btn icon>
+                    <v-icon>mdi-magnify</v-icon>
+                </v-btn>
+        
+                <v-btn icon>
+                    <v-icon>mdi-api</v-icon>
+                </v-btn>
+        
+                <v-btn icon href="/">
+                    <v-icon>mdi-home</v-icon>
+                </v-btn>
+            </v-app-bar>
+            <v-content>
+                <v-container>
+                    <template>
+                        <v-expansion-panels 
+                            focusable
+                        >
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/block/hash/:hash</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Returns the block with a given hash value
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/block/height/:height</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Returns the block in a given position inside the blockchain (starting from 0)
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/blocks/:address</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Returns the stars objects owned by a given address
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/requestValidation</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Returns the validation message to be signed by the owner of a new star object
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/submitStar</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header><strong>/validateChain</strong></v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Confirms whether the blockchain hashes are valid or the data has not been tampered
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                      </template>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data: {
+                raHour: 0,
+                raMin: 0,
+                raSec: 0,
+                decDegree: 0,
+                decMin: 0,
+                decSec: 0,
+                step: 1,
+                story: "",
+                address: "",
+                requestValidationError: false,
+                validationMessage: "",
+                signature: "",
+                registrationError: false,
+                latestNewBlock: {}
+            },
+            methods: {
+                requestValidation: function() {
+                    if (this.address != "") {
+                        const options = {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'address=' + this.address
+                        };
+                        fetch("/requestValidation", options)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw Error(response.statusText);
+                                }
+                                this.requestValidationError = false;
+                                return response;
+                            })
+                            .then(response => response.text())
+                            .then(data => this.validationMessage = data.split('"')[1])
+                            .catch(error => {
+                                this.requestValidationError = true;
+                                console.error(error);
+                        });
+                    }
+                },
+                registerStar: function() {
+                    const star = {
+                        "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
+                        "dec": this.decDegree + "° " + this.decMin + "' " + this.decSec + '"',
+                        "story": this.story
+                    }
+                    const options = {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'address=' + this.address +
+                            '&message=' + this.validationMessage +
+                            '&signature=' + encodeURIComponent(this.signature) +
+                            '&star=' + JSON.stringify(star)
+                    };
+                    fetch("/submitStar", options)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw Error(response.statusText);
+                            }
+                            return response;
+                        })
+                        .then(response => response.json())
+                        .then(json => {
+                            this.latestNewBlock = json;
+                            this.step = 4;
+                        })
+                        .catch(error => {
+                            this.registrationError = true;
+                            console.error(error);
+                        });
+                },
+                resetAllValues: function() {
+                    this.raHour = 0;
+                    this.raMin = 0;
+                    this.raSec=  0;
+                    this.decDegree = 0;
+                    this.decMin = 0;
+                    this.decSec = 0;
+                    this.story = "";
+                    this.address = "";
+                    this.requestValidationError = false;
+                    this.validationMessage = "";
+                    this.signature = "";
+                    this.latestNewBlock = {};
+                    this.step = 1;
+                    this.registrationError = false;
+                },
+                inputDataAgain: function() {
+                    this.registrationError = false;
+                    this.step = 2;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
