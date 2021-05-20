@@ -52,31 +52,75 @@
                             focusable
                         >
                             <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/block/hash/:hash</strong></v-expansion-panel-header>
+                                <v-expansion-panel-header
+                                    color="#C0D8E7"
+                                >
+                                    <strong>/block/hash/:hash</strong>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     Returns the block with a given hash value
+                                    <v-divider></v-divider>
+                                        <v-text-field
+                                            label="Block hash"
+                                            pattern="[0-9a-f]{32}"
+                                        ></v-text-field>
+                                    <v-divider></v-divider>
+                                    Results
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/block/height/:height</strong></v-expansion-panel-header>
+                                <v-expansion-panel-header>
+                                    <strong>/block/height/:height</strong>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     Returns the block in a given position inside the blockchain (starting from 0)
+                                    <v-divider></v-divider>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                label="Block height"
+                                                type="number"
+                                                min="0" 
+                                                step="1"
+                                                pattern="\d+"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-btn
+                                                color="primary"
+                                            >
+                                                Submit
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <v-divider></v-divider>
+                                    Results
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/blocks/:address</strong></v-expansion-panel-header>
+                                <v-expansion-panel-header
+                                    color="#C0D8E7"
+                                >
+                                    <strong>/blocks/:address</strong>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     Returns the stars objects owned by a given address
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/requestValidation</strong></v-expansion-panel-header>
+                                <v-expansion-panel-header>
+                                    <strong>/requestValidation</strong>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     Returns the validation message to be signed by the owner of a new star object
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/submitStar</strong></v-expansion-panel-header>
+                                <v-expansion-panel-header
+                                    color="#C0D8E7"
+                                >
+                                    <strong>/submitStar</strong>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes
                                 </v-expansion-panel-content>
