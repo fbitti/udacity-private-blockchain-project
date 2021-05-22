@@ -199,7 +199,27 @@
                             <v-expansion-panel>
                                 <v-expansion-panel-header><strong>/validateChain</strong></v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    Confirms whether the blockchain hashes are valid or the data has not been tampered
+                                    <p>Confirms whether the blockchain hashes are valid or the data has not been tampered</p>
+                                    <v-divider></v-divider>
+                                    <v-row>
+                                        <v-col cols="12" md="6">
+                                            <v-btn
+                                                color="primary"
+                                                dense
+                                                @click="validateChain()"
+                                            >
+                                                Request
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="12" md="6">
+                                            <p 
+                                                v-if="validateChainResult == ''"
+                                            >The result will appear here.</p>
+                                            <pre
+                                                v-else
+                                            >{{ validateChainResult }}</pre>
+                                        </v-col>
+                                    </v-row>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -233,6 +253,7 @@
                 requestValidationError: false,
                 validationMessage: "",
                 validationResult: "",
+                validateChainResult: "",
                 signature: "",
                 registrationError: false,
                 latestNewBlock: {}
@@ -363,6 +384,23 @@
                             this.registrationError = true;
                             console.error(error);
                         });
+                },
+                validateChain: function() {
+                    this.validateChainResult = {};
+                    const endpoint = "/validateChain";
+                    fetch(endpoint)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw Error(response.statusText);
+                            }
+                            this.validateChainError = false;
+                            return response;
+                        })
+                        .then(response => response.json())
+                        .then(json => this.validateChainResult = json)
+                        .catch(error => {
+                            console.error(error);
+                    });
                 },
                 resetAllValues: function() {
                     this.raHour = 0;
