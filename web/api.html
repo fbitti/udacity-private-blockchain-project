@@ -189,7 +189,6 @@
                         .then(response => response.json())
                         .then(json => this.heightResult = json)
                         .catch(error => {
-                            this.heightResult = error;
                             console.error(error);
                     });
                 },
