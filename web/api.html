@@ -180,8 +180,8 @@
                                                     "error": 404,
                                                     "message": "Block Not Found - error 404" 
                                                 };
-                                    throw Error(response.statusText);
                                 }
+                                throw Error(response.statusText);
                             }
                             this.requestValidationError = false;
                             return response;
