@@ -261,7 +261,7 @@
                 },
                 requestAddress: function() {
                     this.addressResult = {};
-                    const endpoint = "/block/height/" + this.address;
+                    const endpoint = "/blocks/" + this.address;
                     fetch(endpoint)
                         .then(response => {
                             if (!response.ok) {
