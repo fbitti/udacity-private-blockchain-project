@@ -93,7 +93,12 @@
                                                 </v-btn>
                                             </v-col>
                                             <v-col cols="12" md="6">
-                                                <pre>{{ heightResult }}</pre>
+                                                <p 
+                                                    v-if="JSON.stringify(heightResult) == JSON.stringify({})"
+                                                >The result will appear here.</p>
+                                                <pre
+                                                    v-else
+                                                >{{ heightResult }}</pre>
                                             </v-col>
                                         </v-row>
                                     <v-divider></v-divider>
