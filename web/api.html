@@ -175,7 +175,11 @@
                     fetch(endpoint)
                         .then(response => {
                             if (!response.ok) {
-                                throw Error(response.statusText);
+                                if (response.status == 404) {
+                                    this.heightResult = "Block Not Found - error 404";
+                                } else {
+                                    throw Error(response.statusText);
+                                }
                             }
                             this.requestValidationError = false;
                             return response;
@@ -183,7 +187,7 @@
                         .then(response => response.json())
                         .then(json => this.heightResult = json)
                         .catch(error => {
-                            this.requestValidationError = true;
+                            this.heightResult = error;
                             console.error(error);
                     });
                 },
