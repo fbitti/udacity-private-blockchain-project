@@ -193,7 +193,43 @@
                                     <strong>/submitStar</strong>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes
+                                    <p>Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes<p>
+                                    <v-divider></v-divider>
+                                    <v-row>
+                                        <v-col cols="12" md="6">
+                                            <v-text-field
+                                                v-model="address"
+                                                label="Owner address"
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="message"
+                                                label="Validation Message"
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="signature"
+                                                label="Signature"
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="star"
+                                                label="Star Object"
+                                            ></v-text-field>
+                                            <v-btn
+                                                color="success"
+                                                dense
+                                                @click="registerStar()"
+                                            >
+                                                POST
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="12" md="6">
+                                            <p 
+                                                v-if="registerStarResult == ''"
+                                            >The result will appear here.</p>
+                                            <pre
+                                                v-else
+                                            >{{ registerStarResult }}</pre>
+                                        </v-col>
+                                    </v-row>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
@@ -242,7 +278,11 @@
                 decDegree: 0,
                 decMin: 0,
                 decSec: 0,
-                step: 1,
+                star: JSON.stringify({
+                    "dec": "68° 52' 56.9",
+                    "ra": "16h 29m 1.0s",
+                    "story": "Testing the story 4"
+                }),
                 height: 0,
                 heightResult: {},
                 hash: "63309a36ad1222ef85d65dfb526841e20aec5e4abcde3c6d692409a59bb6ad23",
@@ -253,6 +293,7 @@
                 requestValidationError: false,
                 validationMessage: "",
                 validationResult: "",
+                registerStarResult: "",
                 validateChainResult: "",
                 signature: "",
                 registrationError: false,
@@ -346,18 +387,21 @@
                                 return response;
                             })
                             .then(response => response.text())
-                            .then(data => this.validationResult = data)
+                            .then(data => {
+                                this.validationResult = data;
+                                this.validationMessage = data.split('"')[1];
+                            })
                             .catch(error => {
                                 console.error(error);
                         });
                     }
                 },
                 registerStar: function() {
-                    const star = {
-                        "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
-                        "dec": this.decDegree + "° " + this.decMin + "' " + this.decSec + '"',
-                        "story": this.story
-                    }
+                    // const star = {
+                    //     "ra": this.raHour + "h " + this.raMin + "' " + this.raSec + '"',
+                    //     "dec": this.decDegree + "° " + this.decMin + "' " + this.decSec + '"',
+                    //     "story": this.story
+                    // }
                     const options = {
                         method: "POST",
                         headers: {
@@ -366,7 +410,7 @@
                         body: 'address=' + this.address +
                             '&message=' + this.validationMessage +
                             '&signature=' + encodeURIComponent(this.signature) +
-                            '&star=' + JSON.stringify(star)
+                            '&star=' + JSON.stringify(this.star)
                     };
                     fetch("/submitStar", options)
                         .then(response => {
@@ -375,13 +419,11 @@
                             }
                             return response;
                         })
-                        .then(response => response.json())
-                        .then(json => {
-                            this.latestNewBlock = json;
-                            this.step = 4;
+                        .then(response => response.text())
+                        .then(data => {
+                            this.registerStarResult = data;
                         })
                         .catch(error => {
-                            this.registrationError = true;
                             console.error(error);
                         });
                 },
