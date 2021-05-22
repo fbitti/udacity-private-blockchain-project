@@ -171,6 +171,7 @@
             },
             methods: {
                 requestHeight: function() {
+                    this.heightResult = {};
                     const endpoint = "/block/height/" + this.height;
                     fetch(endpoint)
                         .then(response => {
@@ -178,7 +179,7 @@
                                 if (response.status == 404) {
                                     this.heightResult = { 
                                                     "error": 404,
-                                                    "message": "Block Not Found - error 404" 
+                                                    "message": "Block Not Found" 
                                                 };
                                 }
                                 throw Error(response.statusText);
