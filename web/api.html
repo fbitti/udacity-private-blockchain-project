@@ -176,7 +176,10 @@
                         .then(response => {
                             if (!response.ok) {
                                 if (response.status == 404) {
-                                    this.heightResult = "Block Not Found - error 404";
+                                    this.heightResult = { 
+                                                    error: 404,
+                                                    message: "Block Not Found - error 404" 
+                                                };
                                 } else {
                                     throw Error(response.statusText);
                                 }
