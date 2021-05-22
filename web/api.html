@@ -159,7 +159,31 @@
                                     <strong>/requestValidation</strong>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    Returns the validation message to be signed by the owner of a new star object
+                                    <p>Returns the validation message to be signed by the owner of a new star object</p>
+                                    <v-divider></v-divider>
+                                    <v-row>
+                                        <v-col cols="12" md="6">
+                                            <v-text-field
+                                                v-model="address"
+                                                label="Owner address"
+                                            ></v-text-field>
+                                            <v-btn
+                                                color="primary"
+                                                dense
+                                                @click="requestValidation()"
+                                            >
+                                                Request
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="12" md="6">
+                                            <p 
+                                                v-if="validationResult == ''"
+                                            >The result will appear here.</p>
+                                            <pre
+                                                v-else
+                                            >{{ validationResult }}</pre>
+                                        </v-col>
+                                    </v-row>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
@@ -208,6 +232,7 @@
                 addressResult: {},
                 requestValidationError: false,
                 validationMessage: "",
+                validationResult: "",
                 signature: "",
                 registrationError: false,
                 latestNewBlock: {}
@@ -300,9 +325,8 @@
                                 return response;
                             })
                             .then(response => response.text())
-                            .then(data => this.validationMessage = data.split('"')[1])
+                            .then(data => this.validationResult = data)
                             .catch(error => {
-                                this.requestValidationError = true;
                                 console.error(error);
                         });
                     }
