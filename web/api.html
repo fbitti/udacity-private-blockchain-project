@@ -45,219 +45,229 @@
             </v-app-bar>
             <v-content>
                 <v-container>
-                    <template>
-                        <v-expansion-panels 
-                            focusable
-                        >
-                            <v-expansion-panel>
-                                <v-expansion-panel-header
-                                    color="#C0D8E7"
-                                >
-                                    <strong>/block/hash/:hash</strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>Returns the block with a given hash value</p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="hash"
-                                                label="Block hash"
-                                            ></v-text-field>
-                                            <v-btn
-                                                color="primary"
-                                                dense
-                                                @click="requestHash()"
-                                            >
-                                                GET
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="JSON.stringify(hashResult) == JSON.stringify({})"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ hashResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    <strong>/block/height/:height</strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>Returns the block in a given position inside the blockchain (starting from 0)</p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="height"
-                                                label="Block height"
-                                                type="number"
-                                                min="0" 
-                                                step="1"
-                                            ></v-text-field>
-                                            <v-btn
-                                                color="primary"
-                                                dense
-                                                @click="requestHeight()"
-                                            >
-                                                GET
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="JSON.stringify(heightResult) == JSON.stringify({})"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ heightResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header
-                                    color="#C0D8E7"
-                                >
-                                    <strong>/blocks/:address</strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>Returns the stars objects owned by a given address</p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="address"
-                                                label="Owner address"
-                                            ></v-text-field>
-                                            <v-btn
-                                                color="primary"
-                                                dense
-                                                @click="requestAddress()"
-                                            >
-                                                GET
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="JSON.stringify(addressResult) == JSON.stringify({})"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ addressResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    <strong>/requestValidation</strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>Returns the validation message to be signed by the owner of a new star object</p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="address"
-                                                label="Owner address"
-                                            ></v-text-field>
-                                            <v-btn
-                                                color="success"
-                                                dense
-                                                @click="requestValidation()"
-                                            >
-                                                POST
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="validationResult == ''"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ validationResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header
-                                    color="#C0D8E7"
-                                >
-                                    <strong>/submitStar</strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes<p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="address"
-                                                label="Owner address"
-                                            ></v-text-field>
-                                            <v-text-field
-                                                v-model="validationMessage"
-                                                label="Validation Message"
-                                            ></v-text-field>
-                                            <v-text-field
-                                                v-model="signature"
-                                                label="Signature"
-                                            ></v-text-field>
-                                            <v-text-field
-                                                v-model="star"
-                                                label="Star Object"
-                                            ></v-text-field>
-                                            <v-btn
-                                                color="success"
-                                                dense
-                                                @click="registerStar()"
-                                            >
-                                                POST
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="registerStarResult == ''"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ registerStarResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header><strong>/validateChain</strong></v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <p>If the blockchain data has been tampered with, returns a list of errors.</p>
-                                    <v-divider></v-divider>
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-btn
-                                                color="primary"
-                                                dense
-                                                @click="validateChain()"
-                                            >
-                                                GET
-                                            </v-btn>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <p 
-                                                v-if="validateChainResult == ''"
-                                            >The result will appear here.</p>
-                                            <pre
-                                                v-else
-                                            >{{ validateChainResult }}</pre>
-                                        </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                      </template>
+                    <h1>Explore the API</h1>
+                    <v-expansion-panels 
+                        focusable
+                    >
+                        <v-expansion-panel>
+                            <v-expansion-panel-header
+                                color="#C0D8E7"
+                            >
+                                <strong>/block/hash/:hash</strong>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>Returns the block with a given hash value</p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            v-model="hash"
+                                            label="Block hash"
+                                        ></v-text-field>
+                                        <v-btn
+                                            color="primary"
+                                            dense
+                                            @click="requestHash()"
+                                        >
+                                            GET
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="JSON.stringify(hashResult) == JSON.stringify({})"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ hashResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                <strong>/block/height/:height</strong>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>Returns the block in a given position inside the blockchain (starting from 0)</p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            v-model="height"
+                                            label="Block height"
+                                            type="number"
+                                            min="0" 
+                                            step="1"
+                                        ></v-text-field>
+                                        <v-btn
+                                            color="primary"
+                                            dense
+                                            @click="requestHeight()"
+                                        >
+                                            GET
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="JSON.stringify(heightResult) == JSON.stringify({})"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ heightResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header
+                                color="#C0D8E7"
+                            >
+                                <strong>/blocks/:address</strong>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>Returns the stars objects owned by a given address</p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            v-model="address"
+                                            label="Owner address"
+                                        ></v-text-field>
+                                        <v-btn
+                                            color="primary"
+                                            dense
+                                            @click="requestAddress()"
+                                        >
+                                            GET
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="JSON.stringify(addressResult) == JSON.stringify({})"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ addressResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                <strong>/requestValidation</strong>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>Returns the validation message to be signed by the owner of a new star object</p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            v-model="address"
+                                            label="Owner address"
+                                        ></v-text-field>
+                                        <v-btn
+                                            color="success"
+                                            dense
+                                            @click="requestValidation()"
+                                        >
+                                            POST
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="validationResult == ''"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ validationResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header
+                                color="#C0D8E7"
+                            >
+                                <strong>/submitStar</strong>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>Adds a new star object to the blockchain, provided the signature is valid and the timestamp is not older than 5 minutes<p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            v-model="address"
+                                            label="Owner address"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="validationMessage"
+                                            label="Validation Message"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="signature"
+                                            label="Signature"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="star"
+                                            label="Star Object"
+                                        ></v-text-field>
+                                        <v-btn
+                                            color="success"
+                                            dense
+                                            @click="registerStar()"
+                                        >
+                                            POST
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="registerStarResult == ''"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ registerStarResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header><strong>/validateChain</strong></v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p>If the blockchain data has been tampered with, returns a list of errors.</p>
+                                <v-divider></v-divider>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-btn
+                                            color="primary"
+                                            dense
+                                            @click="validateChain()"
+                                        >
+                                            GET
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <p 
+                                            v-if="validateChainResult == ''"
+                                        >The result will appear here.</p>
+                                        <pre
+                                            v-else
+                                        >{{ validateChainResult }}</pre>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                    <v-divider></v-divider>
+                    <h1>How to sign a message</h1>
+                    <v-img
+                        src="/images/how-to-sign-a-message-with-bitcoin-core-1.jpg"
+                    ></v-img>
+                    <v-img
+                        src="/images/how-to-sign-a-message-with-bitcoin-core-2.jpg"
+                    ></v-img>
+                    <v-img
+                        src="/images/how-to-sign-a-message-with-bitcoin-core-3.jpg"
+                    ></v-img>
                 </v-container>
             </v-content>
         </v-app>
