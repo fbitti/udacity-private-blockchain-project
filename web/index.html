@@ -245,6 +245,7 @@
                                         <v-text-field
                                             v-model="address"
                                             v-on:keyup="requestValidation"
+                                            v-on:paste="requestValidation"
                                             label="What is your bitcoin address?"
                                             outlined
                                         ></v-text-field>
