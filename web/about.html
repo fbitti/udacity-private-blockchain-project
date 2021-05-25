@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/images/favicon.ico" sizes="64x64 32x32 16x16" />
+    <style>
+        pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar
+                app
+                short
+                src="images/star-registry-navbar-100px-height.jpg"
+            >       
+                <v-app-bar-title class="text-no-wrap font-weight-bold">Star Registry</v-app-bar-title>
+        
+                <v-spacer></v-spacer>
+        
+                <v-btn icon>
+                    <v-icon>mdi-help</v-icon>
+                </v-btn>
+        
+                <v-btn icon href="api.html" target="_blank">
+                    <v-icon>mdi-api</v-icon>
+                </v-btn>
+        
+                <v-btn icon href="/">
+                    <v-icon>mdi-home</v-icon>
+                </v-btn>
+            </v-app-bar>
+            <v-content>
+                <v-container>
+                    <h1>About this website</h1>
+                    <h2>What is this?</h2>
+                    <p class="text-justify">
+                        This is a friendly user interface to the first project of Udacity's Blockchain Developer Nanodegree.
+                    </p>
+                    <p class="text-justify">
+                        The project consists in implementing the fundamental concepts of a Blockchain platform, like:
+                    </p>
+                    <p>
+                        <ul>
+                            <li>Block</li>
+                            <li>Blockchain</li>
+                            <li>Wallet</li>
+                            <li>Blockchain Identity</li>
+                            <li>Proof of Existence</li>
+                            <li>Digital Assets</li>
+                        </ul>
+                    </p> 
+                    <p class="text-justify">
+                        Implemented in NodeJS and its features, like NPM libraries and Promises.
+                    </p>
+                    <p class="text-justify">
+                        The digital assets are stars, identified by their position in the celestial sphere. To register a star, an astronomer needs to create an address on a Bitcoin wallet, and sign a message with that address, this way proving that the owner of this address, and no one else, registered it in the blockchain.
+                    </p>
+                    <p class="text-justify">
+                        Each block in the blockchain contains 1 star, as depicted here:
+                    </p>
+                    <v-img src="images/star-blocks.jpg"></v-img>
+                    <p class="text-justify">
+                        The authenticity of each block is assured when its hash is linked by a future block. The longer is the chain, the more difficult is to tamper with the initial blocks.
+                    </p>
+                    <p class="text-justify">
+                        This picture expands the previous picture with more technical details, like the chain of hashes, the timestamp and the height of blocks:
+                    </p>
+                    <v-img src="images/chained-star-blocks.jpg"></v-img>
+                    <v-divider></v-divider>          
+                    <h2>More info</h2>
+                    <p>You may find <a href="https://github.com/fbitti/udacity-private-blockchain-project" target="_blank">this project on Github</a>.</p>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify()
+        });
+    </script>
+</body>
+</html>
